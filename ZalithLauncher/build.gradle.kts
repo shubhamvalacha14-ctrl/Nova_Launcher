@@ -237,19 +237,18 @@ tasks.named("preBuild") {
 }
 
 dependencies {
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
-    implementation("commons-codec:commons-codec:1.17.1")
-    implementation("androidx.drawerlayout:drawerlayout:1.2.0")
-    implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
-    implementation("androidx.annotation:annotation:1.7.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.core:core-ktx:1.13.0")
-    implementation("androidx.palette:palette-ktx:1.0.0")
-
-    implementation("com.github.duanhong169:checkerboarddrawable:1.0.2")
-    implementation("com.github.PojavLauncherTeam:portrait-sdp:ed33e89cbc")
-    implementation("com.github.PojavLauncherTeam:portrait-ssp:6c02fd739b")
+        implementation("com.github.duanhong169:checkerboarddrawable:1.0.2")
+    
+    // Updated with exclusion rules to block duplicate BuildConfig files
+    implementation("com.github.PojavLauncherTeam:portrait-sdp:ed33e89cbc") {
+        exclude(group = "com.intuit.sdp", module = "sdp-android")
+    }
+    implementation("com.github.PojavLauncherTeam:portrait-ssp:6c02fd739b") {
+        exclude(group = "com.intuit.ssp", module = "ssp-android")
+    }
+    
     implementation("com.github.Mathias-Boulay:ExtendedView:1.0.0")
+
     implementation("com.github.Mathias-Boulay:android_gamepad_remapper:2.0.3")
     implementation("com.github.Mathias-Boulay:virtual-joystick-android:1.14")
     implementation("com.github.skydoves:powerspinner:1.2.7")
