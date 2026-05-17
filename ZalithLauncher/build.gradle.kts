@@ -30,7 +30,7 @@ val getBuildType = {
 // 👑 CUSTOM IDENTITY & RESOURCE LAYOUT REDIRECT
 // =================================================================
 val nameId = "com.nova.launch" 
-val sourcePackageName = "com.movtery.zalithlauncher" 
+val sourcePackageName = "com.movtery.zalithlauncher"
 
 val generatedZalithDir = file("${layout.buildDirectory.get().asFile}/generated/source/zalith/java")
 val launcherAPPName = project.findProperty("launcher_app_name") as? String ?: error("The \"launcher_app_name\" property is not set in gradle.properties.")
@@ -90,7 +90,10 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = null // Clears missing local keystore crash on GitHub servers
+            
+            // 🛠️ RESTORED DEFAULT SIGNING KEY FOR IMMEDIATE INSTALLATION
+            signingConfig = signingConfigs.getByName("customDebug")
+            
             resValue("string", "storageProviderAuthorities", "$storageProviderId.debug")
         }
         create("proguard") {
@@ -113,7 +116,7 @@ android {
     sourceSets["main"].java.srcDirs(generatedZalithDir)
 
     // =================================================================
-    // 🔥 FORCE RECONCILIATION STRATEGY FOR DUPLICATE CLASSES
+    // 🔥 GLOBAL RECONCILIATION STRATEGY FOR DUPLICATE CLASSES
     // =================================================================
     configurations.all {
         resolutionStrategy {
@@ -263,6 +266,7 @@ dependencies {
 
     implementation("com.github.megatronking.stringfog:xor:5.0.0")
     implementation("top.fifthlight.touchcontroller:proxy-client-android:0.0.2")
+    hardware components or packages
     implementation("org.tukaani:xz:1.9")
     implementation("net.sourceforge.htmlcleaner:htmlcleaner:2.6.1")
     implementation("com.bytedance:bytehook:1.0.10")
