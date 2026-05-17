@@ -33,7 +33,7 @@ val getBuildType = {
 val nameId = "com.nova.launch" // Your custom package identity!
 val sourcePackageName = "com.movtery.zalithlauncher" // Maps the physical source directory layout
 
-val generatedZalithDir = file("$buildDir/generated/source/zalith/java")
+val generatedZalithDir = file("${layout.buildDirectory.get().asFile}/generated/source/zalith/java")
 val launcherAPPName = project.findProperty("launcher_app_name") as? String ?: error("The \"launcher_app_name\" property is not set in gradle.properties.")
 val launcherName = project.findProperty("launcher_name") as? String ?: error("The \"launcher_name\" property is not set in gradle.properties.")
 val launcherVersionCode = (project.findProperty("launcher_version_code") as? String)?.toIntOrNull() ?: error("The \"launcher_version_code\" property is not set as an integer in gradle.properties.")
@@ -46,7 +46,7 @@ configurations {
     }
 }
 
-configure<StringFogExtension> {
+configure<com.github.megatronking.stringfog.plugin.StringFogExtension> {
     implementation = "com.github.megatronking.stringfog.xor.StringFogImpl"
     fogPackages = arrayOf(sourcePackageName) // Target existing layout folder strings
     kg = com.github.megatronking.stringfog.plugin.kg.RandomKeyGenerator()
