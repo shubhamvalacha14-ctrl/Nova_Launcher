@@ -266,7 +266,6 @@ dependencies {
 
     implementation("com.github.megatronking.stringfog:xor:5.0.0")
     implementation("top.fifthlight.touchcontroller:proxy-client-android:0.0.2")
-    hardware components or packages
     implementation("org.tukaani:xz:1.9")
     implementation("net.sourceforge.htmlcleaner:htmlcleaner:2.6.1")
     implementation("com.bytedance:bytehook:1.0.10")
