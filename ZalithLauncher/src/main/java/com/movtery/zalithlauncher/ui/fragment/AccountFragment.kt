@@ -33,18 +33,10 @@ import com.movtery.zalithlauncher.event.value.LocalLoginEvent
 import com.movtery.zalithlauncher.event.value.OtherLoginEvent
 import com.movtery.zalithlauncher.feature.accounts.AccountUtils
 import com.movtery.zalithlauncher.feature.accounts.AccountsManager
+import com.movtery.zalithlauncher.feature.accounts.LocalAccountUtils
 import com.movtery.zalithlauncher.feature.accounts.LocalAccountUtils.CheckResultListener
-
-class LocalAccountUtils {
-    companion object {
-        @JvmStatic 
-        fun checkUsageAllowed(l: CheckResultListener) {
-            l.onUsageAllowed()
-        }
-        @JvmStatic 
-        fun openDialog(a: Any, b: Any, c: Any, d: Any) {}
-    }
-}
+import com.movtery.zalithlauncher.feature.accounts.LocalAccountUtils.Companion.checkUsageAllowed
+import com.movtery.zalithlauncher.feature.accounts.LocalAccountUtils.Companion.openDialog
 import com.movtery.zalithlauncher.feature.accounts.OtherLoginHelper
 import com.movtery.zalithlauncher.feature.log.Logging
 import com.movtery.zalithlauncher.feature.login.OtherLoginApi
