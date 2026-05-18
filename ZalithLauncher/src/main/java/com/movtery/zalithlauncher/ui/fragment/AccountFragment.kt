@@ -157,7 +157,7 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
             }
         })
 
-        binding.apply {
+                binding.apply {
             accountsRecycler.layoutManager = LinearLayoutManager(context)
             accountsRecycler.setLayoutAnimation(
                 LayoutAnimationController(
@@ -166,7 +166,9 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                         R.anim.fade_downwards
                     )
                 )
-                        accountTypeTab.observeIndexChange { _, toIndex, _, fromUser ->
+            )
+
+            accountTypeTab.observeIndexChange { _, toIndex, _, fromUser ->
                 fun nonMicrosoftLogin(message: Int, login: () -> Unit) {
                     checkUsageAllowed(object : CheckResultListener {
                         override fun onUsageAllowed() {
@@ -202,10 +204,12 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
 
             addServer.setOnClickListener(this@AccountFragment)
             returnButton.setOnClickListener(this@AccountFragment)
-
+                              
+                }
 
         reloadAccounts()
         refreshOtherServer()
+    
     
     @SuppressLint("NotifyDataSetChanged")
     private fun reloadRecyclerView() {
