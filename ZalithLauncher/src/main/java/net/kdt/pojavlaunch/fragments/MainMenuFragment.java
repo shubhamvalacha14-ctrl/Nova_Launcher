@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.movtery.anim.AnimPlayer;
 import com.movtery.anim.animations.Animations;
-import com.movtery.zalithlauncher.InfoCenter;
 import com.movtery.zalithlauncher.R;
 import com.movtery.zalithlauncher.databinding.FragmentLauncherBinding;
 import com.movtery.zalithlauncher.event.single.AccountUpdateEvent;
@@ -24,7 +23,6 @@ import com.movtery.zalithlauncher.feature.version.utils.VersionIconUtils;
 import com.movtery.zalithlauncher.feature.version.VersionInfo;
 import com.movtery.zalithlauncher.feature.version.VersionsManager;
 import com.movtery.zalithlauncher.task.TaskExecutors;
-import com.movtery.zalithlauncher.ui.fragment.AboutFragment;
 import com.movtery.zalithlauncher.ui.fragment.ControlButtonFragment;
 import com.movtery.zalithlauncher.ui.fragment.FilesFragment;
 import com.movtery.zalithlauncher.ui.fragment.FragmentWithAnim;
@@ -62,17 +60,20 @@ public class MainMenuFragment extends FragmentWithAnim {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        // 1. Manage Control Layouts Action Link Mapping (Top Bar Logo Click Hook)
         binding.customControlButton.setOnClickListener(v -> ZHTools.swapFragmentWithAnim(this, ControlButtonFragment.class, ControlButtonFragment.TAG, null));
+        
+        // 2. Open Main Folder Directory Layout Link (Top Bar Logo Click Hook)
         binding.openMainDirButton.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(FilesFragment.BUNDLE_LIST_PATH, PathManager.DIR_GAME_HOME);
             ZHTools.swapFragmentWithAnim(this, FilesFragment.class, FilesFragment.TAG, bundle);
         });
+        
+        // 3. Execute Run Installer Platform Trigger (Top Bar Logo Click Hook)
         binding.installJarButton.setOnClickListener(v -> runInstallerWithConfirmation(false));
-        binding.installJarButton.setOnLongClickListener(v -> {
-            runInstallerWithConfirmation(true);
-            return true;
-        });
+        
+        // 4. Share Crash and Activity Logs Hook (Top Bar Logo Click Hook)
         binding.shareLogsButton.setOnClickListener(v -> ZHTools.shareLogs(requireActivity()));
 
         binding.version.setOnClickListener(v -> {
@@ -83,6 +84,7 @@ public class MainMenuFragment extends FragmentWithAnim {
                 TaskExecutors.runInUIThread(() -> Toast.makeText(requireContext(), R.string.version_manager_task_in_progress, Toast.LENGTH_SHORT).show());
             }
         });
+        
         binding.managerProfileButton.setOnClickListener(v -> {
             if (!isTaskRunning()) {
                 ViewAnimUtils.setViewAnim(binding.managerProfileButton, Animations.Pulse);
