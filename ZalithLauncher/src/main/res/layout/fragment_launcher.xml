@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <
+               
                 <com.movtery.zalithlauncher.ui.layout.AnimRelativeLayout
                     android:id="@+id/custom_control_button"
                     android:layout_width="match_parent"
