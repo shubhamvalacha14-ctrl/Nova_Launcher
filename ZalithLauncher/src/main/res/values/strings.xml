@@ -79,8 +79,8 @@
     <string name="version_beta">Beta</string>
     <string name="force_exit_confirm">Are you sure you want to force close?</string>
     <string name="autoram_info_msg">Memory set to %d MB</string>
-    <string name="memory_warning_msg">The available memory (%d) is lower than the allocated memory (%d), which may cause the game to crash. If the game crashes, please change the configuration!</string>
-    <string name="address_memory_warning_msg">The available free memory space (%d) is lower than the allocated memory (%d), which will cause a crash. If the game crashes, please adjust the memory allocation.</string>
+    <string name="memory_warning_msg" formatted="false">The available memory (%d) is lower than the allocated memory (%d), which may cause the game to crash. If the game crashes, please change the configuration!</string>
+    <string name="address_memory_warning_msg" formatted="false">The available free memory space (%d) is lower than the allocated memory (%d), which will cause a crash. If the game crashes, please adjust the memory allocation.</string>
     <string name="notif_channel_name">General</string>
     <string name="lazy_service_default_title">%s Front Desk Service</string>
     <string name="progresslayout_tasks_in_progress">%d tasks in progress</string>
@@ -106,13 +106,13 @@
     <string name="notif_download_finished">The game is ready to launch</string>
     <string name="notif_download_finished_desc">Click here to launch it!</string>
     <string name="notification_permission_dialog_title">Permission Request</string>
-    <string name="notification_permission_dialog_text">%s requires notification permission to prevent game file downloads from stopping when you leave the app. Without this permission, Android may stop your download progress when %s is in the background.</string>
+    <string name="notification_permission_dialog_text" formatted="false">%s requires notification permission to prevent game file downloads from stopping when you leave the app. Without this permission, Android may stop your download progress when %s is in the background.</string>
     <string name="notification_permission_toast">You can change your mind at any time by going to \"System Settings\"</string>
     <string name="newdl_starting">Reading game metadata…</string>
     <string name="newdl_downloading_metadata">Downloading game metadata (%s)</string>
-    <string name="newdl_downloading_game_files">Downloading game files… (%d/%d, %.2f MB)</string>
-    <string name="newdl_downloading_game_files_size">Downloading game files… (%.2f/%.2f MB, %.2f MB/s)</string>
-    <string name="newdl_extracting_native_libraries">Extracting native libraries (%d/%d)</string>
+    <string name="newdl_downloading_game_files" formatted="false">Downloading game files… (%d/%d, %.2f MB)</string>
+    <string name="newdl_downloading_game_files_size" formatted="false">Downloading game files… (%.2f/%.2f MB, %.2f MB/s)</string>
+    <string name="newdl_extracting_native_libraries" formatted="false">Extracting native libraries (%d/%d)</string>
     <string name="log_view_button_scroll_off">Auto-scroll: Off</string>
     <string name="log_view_button_scroll_on">Auto-scroll: On</string>
     <string name="log_view_button_output_off">Output: Off</string>
@@ -128,7 +128,7 @@
     <string name="mod_failed_to_load_list">Failed to load version list!</string>
     <string name="mod_optifine_progress">Downloading %s</string>
     <string name="mod_check_dialog_title">Mod Check Report</string>
-    <string name="mod_check_progress_message">Checking mods (%d / %d)</string>
+    <string name="mod_check_progress_message" formatted="false">Checking mods (%d / %d)</string>
     <string name="mod_check_touch_controller">Detected that Touch Controller mod (%s) is installed, the launcher is ready to enable control proxy to adapt to the mod.</string>
     <string name="mod_check_sodium_or_embeddium">Detected installed Sodium or Embeddium mod (%s). The launcher will disable this mod\'s warnings or prevent it from intentionally crashing on Android devices. However, please note that the mod\'s community has explicitly stated that they will no longer accept any issues related to Android devices. Therefore, if you encounter any problems while using this mod, do not report them to the mod\'s community!</string>
     <string name="mod_check_physics">The currently used physics mod (%s) is unpatched (replacing libPhysXJniBindings_64.so from x86_64 architecture to arm64), will crash on launch.</string>
@@ -136,7 +136,7 @@
     <string name="mod_check_valkyrien_skies">Valkyrien Skies/Valkyrien Warfare (%s) cannot run directly in single-player mode. You must run it on a server (Termux can be used), otherwise the game will crash.</string>
     <string name="mod_check_yes_steve_model">Yes, Steve Model (%s) 2.2.2–2.5.1 cannot run on the Android system.</string>
     <string name="mod_check_imblocker">IMBlocker/In-GameIME (%s) is not compatible with Android and will cause the game to crash during startup.</string>
-    <string name="mod_check_replay_mod">ReplayMod (%s) requires FFmpeg to render videos. Please install the FFmpeg plugin separately\n%s\n%s</string>
+    <string name="mod_check_replay_mod" formatted="false">ReplayMod (%s) requires FFmpeg to render videos. Please install the FFmpeg plugin separately\n%s\n%s</string>
     <string name="mod_check_borderlesswindow">Borderless Window (%s) is not compatible with Android and will cause the game to crash during startup.</string>
     <!-- Controls -->
     <string name="control_primary">Left Click</string>
@@ -261,7 +261,7 @@
     <!-- Permissions -->
     <string name="permissions_manage_external_storage">%s requires permission to manage all files on the device to use this feature properly. Please enable the permission!</string>
     <string name="permissions_write_external_storage">%s requires storage management permission. If the permission is not enabled, it may cause issues such as game files failing to save or decompress properly. Please grant the permission to ensure proper functionality.</string>
-    <string name="permissions_storage_for_renderer_config">The selected renderer plugin %s may have settings. If %s lacks storage access, its settings cannot be read. Grant permission for proper function.</string>
+    <string name="permissions_storage_for_renderer_config" formatted="false">The selected renderer plugin %s may have settings. If %s lacks storage access, its settings cannot be read. Grant permission for proper function.</string>
     <!-- Profiles Path -->
     <string name="profiles_path_title">Game Path Management</string>
     <string name="profiles_path_default">Default Path</string>
@@ -343,7 +343,7 @@
     <string name="custom_mouse_added">Successfully set virtual mouse:</string>
     <string name="custom_mouse_default">Default Virtual Mouse</string>
     <string name="custom_mouse_title">Custom Virtual Mouse</string>
-    <string name="custom_mouse_dialog">You can add mouse images in (Launcher Settings - %s - %s)</string>
+    <string name="custom_mouse_dialog" formatted="false">You can add mouse images in (Launcher Settings - %s - %s)</string>
     <string name="custom_mouse_desc">Open the virtual mouse management interface, where you can add your favorite virtual mouse icons and use them</string>
     <string name="custom_mouse_message_default">The currently selected virtual mouse is the default virtual mouse, sharing, renaming, and deleting operations are not supported</string>
     <string name="custom_background_add">Add Background Image</string>
@@ -378,10 +378,10 @@
     <string name="file_multi_select_mode">Enable multi-select mode</string>
     <string name="file_multi_select_mode_title">Multi-select items</string>
     <string name="file_multi_select_mode_message">Currently selected a total of %d items</string>
-    <string name="file_operation_file">Operating file… (%s / %s, %d)</string>
+    <string name="file_operation_file" formatted="false">Operating file… (%s / %s, %d)</string>
     <string name="file_jump_to_path">Jump to path</string>
     <string name="file_nothing">No files found!</string>
-    <string name="file_invalid_length">Name too long! (Current length: %d, Maximum length: %d)</string>
+    <string name="file_invalid_length" formatted="false">Name too long! (Current length: %d, Maximum length: %d)</string>
     <!-- Search View -->
     <string name="search_case_sensitive">Case sensitive</string>
     <string name="search_only_show_results">Show only search results</string>
@@ -581,7 +581,7 @@
     <string name="download_search_no_result">No related resources found!</string>
     <string name="download_search_platform_not_supported">The current platform does not support downloading this type of resource, or does not support this category filter!</string>
     <string name="download_install_custom_name">Custom File Name</string>
-    <string name="download_install_download_file">Downloading resource file (%.2fMB / %.2fMB, speed: %s/s)</string>
+    <string name="download_install_download_file" formatted="false">Downloading resource file (%.2fMB / %.2fMB, speed: %s/s)</string>
     <string name="download_install_dependencies">%s has the following dependencies or incompatible mods</string>
     <string name="download_install_dependencies_tip">Please download the required dependency mods as needed. Missing essential dependencies or installing incompatible mods may cause the game to fail to run!</string>
     <string name="download_install_dependencies_required">Required</string>
@@ -596,11 +596,11 @@
     <!-- ModPack -->
     <string name="select_modpack_local_tip">Please select a modpack file that the launcher supports importing!</string>
     <string name="select_modpack_local_not_supported">This modpack is not supported by the launcher! The launcher only supports importing modpacks in Modrinth, CurseForge, and MCBBS formats. Please check if your modpack is made according to the specified formats!</string>
-    <string name="select_modpack_local_installing_files">Installing game files… (%d / %d)</string>
+    <string name="select_modpack_local_installing_files" formatted="false">Installing game files… (%d / %d)</string>
     <string name="modpack_download_downloading_metadata">Downloading modpack metadata (%.2fMB / %.2fMB, speed: %s/s)</string>
-    <string name="modpack_download_downloading_mods">Downloading mods (%.2fMB / %.2fMB, speed: %s/s)</string>
-    <string name="modpack_download_downloading_mods_fc">Downloading mods (Downloaded files: %d (%s), Total files: %d, Speed: %s/s)</string>
-    <string name="modpack_download_applying_overrides">Applying overrides (%d/%d)</string>
+    <string name="modpack_download_downloading_mods" formatted="false">Downloading mods (%.2fMB / %.2fMB, speed: %s/s)</string>
+    <string name="modpack_download_downloading_mods_fc" formatted="false">Downloading mods (Downloaded files: %d (%s), Total files: %d, Speed: %s/s)</string>
+    <string name="modpack_download_applying_overrides" formatted="false">Applying overrides (%d/%d)</string>
     <string name="modpack_install_download_failed">Failed to download modpack file</string>
     <string name="modpack_prepare_mod_loader_installation">All mods have been installed, preparing to install mod loader</string>
     <!-- Clear Up -->
@@ -621,7 +621,7 @@
     <string name="update_fail">Network error, unable to check for updates at the moment!</string>
     <string name="update_fail_code">Network error, unable to check for updates at the moment! Error code: %d</string>
     <string name="update_success">The latest installation package has been downloaded. Do you want to install it? Package location:</string>
-    <string name="update_downloading">Downloading installation package… (%s / %s)</string>
+    <string name="update_downloading" formatted="false">Downloading installation package… (%s / %s)</string>
     <string name="update_downloading_tip">Fetching, update source: %s</string>
     <!-- Other Login -->
     <string name="other_login_server">Auth Server</string>
