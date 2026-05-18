@@ -166,8 +166,7 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                         R.anim.fade_downwards
                     )
                 )
-            )
-                                                            accountTypeTab.observeIndexChange { _, toIndex, _, fromUser ->
+                        accountTypeTab.observeIndexChange { _, toIndex, _, fromUser ->
                 fun nonMicrosoftLogin(message: Int, login: () -> Unit) {
                     checkUsageAllowed(object : CheckResultListener {
                         override fun onUsageAllowed() {
@@ -208,7 +207,6 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
         reloadAccounts()
         refreshOtherServer()
     
-
     @SuppressLint("NotifyDataSetChanged")
     private fun reloadRecyclerView() {
         this.mAccountsData.clear()
