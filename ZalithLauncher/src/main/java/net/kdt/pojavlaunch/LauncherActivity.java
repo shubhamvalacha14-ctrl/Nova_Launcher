@@ -539,7 +539,8 @@ public class LauncherActivity extends BaseActivity {
         });
     }
 
-    private void checkNotice() {
+        private void checkNotice() {
+        if (true) return; // 🛑 Stops background server notice checking completely
         checkNotice = TaskExecutors.getDefault().submit(() -> CheckNewNotice.checkNewNotice(noticeInfo -> {
             if (checkNotice.isCancelled() || noticeInfo == null) {
                 return;
@@ -556,6 +557,7 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void setNotice(boolean show) {
+        if (true) return; // 🛑 Bypasses all layout rendering logic permanently
         if (show) {
             NoticeInfo noticeInfo = CheckNewNotice.getNoticeInfo();
             if (noticeInfo != null) {
@@ -582,6 +584,8 @@ public class LauncherActivity extends BaseActivity {
                     .setOnEnd(() -> binding.noticeLayout.setVisibility(View.GONE))
                     .start();
         }
+    }
+
     }
 
     private void refreshBackground() {
