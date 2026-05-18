@@ -167,37 +167,36 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
                     )
                 )
             )
-                                                accountTypeTab.observeIndexChange { _, toIndex, _, fromUser ->
+                                                            accountTypeTab.observeIndexChange { _, toIndex, _, fromUser ->
                 fun nonMicrosoftLogin(message: Int, login: () -> Unit) {
                     checkUsageAllowed(object : CheckResultListener {
                         override fun onUsageAllowed() {
                             login()
                         }
                         override fun onUsageDenied() {
-                            login() // 🛑 Force it to log in anyway, skipping the warning dialog!
+                            login()
                         }
                     })
                 }
 
-                when (toIndex) {
-                    // 微软账户
-                    0 -> ZHTools.swapFragmentWithAnim(
-                        this@AccountFragment,
-                        MicrosoftLoginFragment::class.java,
-                        MicrosoftLoginFragment.TAG,
-                        null
-                    )
-                    // 离线账户
-                    1 -> {
-                        nonMicrosoftLogin(
-                            R.string.account_no_microsoft_account_local
-                        ) { localLogin() }
-                    }
-                    // 外置账户
-                    else -> {
-                        nonMicrosoftLogin(
-                            R.string.account_no_microsoft_account_other
-                        ) { otherLogin(toIndex - 2) }
+                if (fromUser) {
+                    when (toIndex) {
+                        0 -> ZHTools.swapFragmentWithAnim(
+                            this@AccountFragment,
+                            MicrosoftLoginFragment::class.java,
+                            MicrosoftLoginFragment.TAG,
+                            null
+                        )
+                        1 -> {
+                            nonMicrosoftLogin(
+                                R.string.account_no_microsoft_account_local
+                            ) { localLogin() }
+                        }
+                        else -> {
+                            nonMicrosoftLogin(
+                                R.string.account_no_microsoft_account_other
+                            ) { otherLogin(toIndex - 2) }
+                        }
                     }
                 }
             }
@@ -208,7 +207,7 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
 
         reloadAccounts()
         refreshOtherServer()
-    }
+    
 
     @SuppressLint("NotifyDataSetChanged")
     private fun reloadRecyclerView() {
