@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nova Launcher"
-                android:textColor="@color/primary_text"
+                android:textColor="@color/menu_bar_text"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 android:layout_marginEnd="@dimen/_16sdp"/>
@@ -54,7 +54,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_menu_custom_controls"
-                    app:tint="@color/primary_text" />
+                    app:tint="@color/icon_color" />
 
                 <ImageButton
                     android:id="@+id/open_main_dir_button"
@@ -64,7 +64,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_folder"
-                    app:tint="@color/primary_text" />
+                    app:tint="@color/icon_color" />
 
                 <ImageButton
                     android:id="@+id/install_jar_button"
@@ -74,7 +74,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_java"
-                    app:tint="@color/primary_text" />
+                    app:tint="@color/icon_color" />
 
                 <ImageButton
                     android:id="@+id/share_logs_button"
@@ -83,7 +83,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_share"
-                    app:tint="@color/primary_text" />
+                    app:tint="@color/icon_color" />
 
             </LinearLayout>
         </LinearLayout>
