@@ -27,7 +27,6 @@ val getBuildType = {
     buildType
 }
 
-// 🛠️ THE SECRET FIX: Keep the code namespace original so internal layout imports don't break
 val nameId = "com.movtery.zalithlauncher" 
 val generatedZalithDir = file("$buildDir/generated/source/zalith/java")
 val launcherAPPName = "Nova Launcher"
@@ -50,7 +49,7 @@ configure<StringFogExtension> {
 }
 
 android {
-    namespace = nameId // Matches original internal codebase structure
+    namespace = nameId
     compileSdk = 34
 
     signingConfigs {
@@ -70,7 +69,6 @@ android {
     }
 
     defaultConfig {
-        // 🚀 This changes your App Identity on your phone to com.sadly.nova without breaking the internal code compilation!
         applicationId = "com.sadly.nova" 
         minSdk = 26
         targetSdk = 34
@@ -114,46 +112,10 @@ android {
         onVariants { variant ->
             variant.outputs.forEach { output ->
                 if (output is com.android.build.api.variant.impl.VariantOutputImpl) {
-                    val variantName = variant.name.replaceFirstChar { it.uppercaseChar() }
-                    afterEvaluate {
-                        val task = tasks.named("merge${variantName}Assets").get() as MergeSourceSetFolders
-                        task.doLast {
-                            val arch = System.getProperty("arch", "all")
-                            val assetsDir = task.outputDir.get().asFile
-                            val jreList = listOf("jre-8", "jre-17", "jre-21")
-                            println("arch:$arch")
-                            jreList.forEach { jreVersion ->
-                                val runtimeDir = File("$assetsDir/components/$jreVersion")
-                                println("runtimeDir:${runtimeDir.absolutePath}")
-                                runtimeDir.listFiles()?.forEach {
-                                    if (arch != "all" && it.name != "version" && !it.name.contains("universal") && it.name != "bin-${arch}.tar.xz") {
-                                        println("delete:${it} : ${it.delete()}")
-                                    }
-                                }
-                            }
-                        }
-                    }
-
                     (output.getFilter(ABI)?.identifier ?: "all").let { abi ->
                         val baseName = "$launcherName-${if (variant.buildType == "release") defaultConfig.versionName else "Debug-${defaultConfig.versionName}"}"
                         output.outputFileName = if (abi == "all") "$baseName.apk" else "$baseName-$abi.apk"
                     }
-                }
-            }
-        }
-    }
-
-    splits {
-        val arch = System.getProperty("arch", "all")
-        if (arch != "all") {
-            abi {
-                isEnable = true
-                reset()
-                when (arch) {
-                    "arm" -> include("armeabi-v7a")
-                    "arm64" -> include("arm64-v8a")
-                    "x86" -> include("x86")
-                    "x86_64" -> include("x86_64")
                 }
             }
         }
@@ -210,7 +172,6 @@ fun generateJavaClass(sourceOutputDir: File, packageName: String, className: Str
         |}
         """.trimMargin()
     )
-    println("Generated Java file: ${javaFile.absolutePath}")
 }
 
 tasks.register("generateInfoDistributor") {
