@@ -96,7 +96,8 @@
 
         <provider
             android:name="net.kdt.pojavlaunch.scoped.FolderProvider"
-            android:authorities="@string/storageProviderAuthorities"
+            // 🛠️ SEAMLESSLY ATTACHED THE DYNAMIC PLACEHOLDER STRINGS FOR STORAGE AUTHORITIES
+            android:authorities="${storageProviderAuthorities}"
             android:exported="true"
             android:grantUriPermissions="true"
             android:permission="android.permission.MANAGE_DOCUMENTS">
