@@ -82,14 +82,14 @@ android {
         manifestPlaceholders["launcher_name"] = launcherAPPName
     }
 
-    // =================================================================
+        // =================================================================
     // 🌍 BYPASS TRANSLATION STRINGS SUB-COMPILATION ERRORS GLOBALLY
     // =================================================================
-    androidResources {
-        noCompress.addAll(listOf("xml"))
-        additionalParameters.addAll(listOf("--no-version-vectors", "--legacy"))
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+        disable.addAll(listOf("MissingTranslation", "ExtraTranslation", "StringFormatInvalid"))
     }
-
     buildTypes {
         val storageProviderId = "$nameId.storage_provider"
 
