@@ -137,7 +137,9 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun toMain() {
-        startActivity(Intent(this, LauncherActivity::class.java))
+        // Correcting intent routing to point explicitly to your parent package's activity configuration mapping
+        val intent = Intent().setClassName(packageName, "net.kdt.pojavlaunch.LauncherActivity")
+        startActivity(intent)
         finish()
     }
 
