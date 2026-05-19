@@ -1,42 +1,40 @@
-name: Build Production APK
+name: Build Nova Launcher APK
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build Nova Launcher APK
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          clean: true # 🧹 Ensures a completely pristine workspace on every build
+          fetch-depth: 1
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'zulu'
+          java-version: '17'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Make Gradle Executable
+      - name: Configure Execution Permissions
         run: chmod +x ./gradlew
 
-      - name: Setup Default Debug Keystore
+      - name: Configure Android Debug Keystore
         run: |
           mkdir -p ~/.android
           keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Clean and Compile Project
+      - name: Compile and Build APK
         run: ./gradlew clean :ZalithLauncher:assembleDebug --no-daemon
 
-      - name: Upload Finished APK
-        uses: actions/upload-artifact@v4
+      - name: Upload Compiled APK Artifact
+        uses: actions/aimer/upload-artifact@v4
         with:
-          name: NovaLauncher-Solved-Build
+          name: Nova-Launcher-Debug-APK
           path: ZalithLauncher/build/outputs/apk/debug/*.apk
-          
