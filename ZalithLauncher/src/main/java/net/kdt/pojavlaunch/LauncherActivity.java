@@ -515,25 +515,27 @@ public class LauncherActivity extends BaseActivity {
     public void onAttachedToWindow() {
         LauncherPreferences.computeNotchSize(this);
     }
-    private void launchGame(Version version) {
+        private void launchGame(Version version) {
         LocalAccountUtils.checkUsageAllowed(new LocalAccountUtils.CheckResultListener() {
             @Override
             public void onUsageAllowed() {
-                // Dynamically forces Vulkan Zink driver configurations via reflection to pass compiler checks cleanly
+                // Dynamically force Vulkan Zink driver parameters via reflection
                 try {
-                    java.lang.reflect.Method setenvMethod = Class.forName("android.system.Os").getMethod("setenv", String.class, String.class, boolean.class);
+                    java.lang.reflect.Method setenvMethod = Class.forName("android.system.Os")
+                        .getMethod("setenv", String.class, String.class, boolean.class);
+                    
                     setenvMethod.invoke(null, "vblank_mode", "0", true);
                     setenvMethod.invoke(null, "allow_glsl_extension_directive_midshader", "false", true);
                     setenvMethod.invoke(null, "MESA_EXTENSION_OVERRIDE", "-GL_ARB_gpu_shader5", true);
                     setenvMethod.invoke(null, "zink_debug", "compact", true);
                 } catch (Exception e) {
-                    // Fail gracefully if device system architecture blocks reflection parameters
+                    // Fail gracefully if permissions restrict parameters
                 }
 
                 preLaunch(LauncherActivity.this, version);
             }
 
-                        @Override
+            @Override
             public void onUsageDenied() {
                 if (!AllSettings.getLocalAccountReminders().getValue()) {
                     preLaunch(LauncherActivity.this, version);
@@ -547,155 +549,31 @@ public class LauncherActivity extends BaseActivity {
                     );
                 }
             }
+        });
+    }
 
-        private void checkNotice() {
-        if (true) return; // 🛑 Stops background server notice checking completely
+    private void checkNotice() {
+        if (true) return; // Stops background server notice checking completely
         checkNotice = TaskExecutors.getDefault().submit(() -> CheckNewNotice.checkNewNotice(noticeInfo -> {
             if (checkNotice.isCancelled() || noticeInfo == null) {
                 return;
-            }
-            //当偏好设置内是开启通知栏 或者 检测到通知编号不为偏好设置里保存的值时，显示通知栏
-            if (AllSettings.getNoticeDefault().getValue() ||
-                    (noticeInfo.numbering != AllSettings.getNoticeNumbering().getValue())) {
-                TaskExecutors.runInUIThread(() -> setNotice(true));
-                AllSettings.getNoticeDefault().put(true)
-                        .put(AllSettings.getNoticeNumbering(), noticeInfo.numbering)
-                        .save();
             }
         }));
     }
 
     private void setNotice(boolean show) {
-        if (true) return; // 🛑 Bypasses all layout rendering logic permanently
-        if (show) {
-            NoticeInfo noticeInfo = CheckNewNotice.getNoticeInfo();
-            if (noticeInfo != null) {
-                binding.noticeGotButton.setClickable(true);
-
-                binding.noticeTitleView.setText(noticeInfo.title);
-                binding.noticeMessageView.setText(noticeInfo.content);
-                binding.noticeDateView.setText(noticeInfo.date);
-
-                Linkify.addLinks(binding.noticeMessageView, Linkify.WEB_URLS);
-                binding.noticeMessageView.setMovementMethod(LinkMovementMethod.getInstance());
-
-                noticeAnimPlayer.clearEntries();
-                noticeAnimPlayer.apply(new AnimPlayer.Entry(binding.noticeLayout, Animations.BounceEnlarge))
-                        .setOnStart(() -> binding.noticeLayout.setVisibility(View.VISIBLE))
-                        .start();
-            }
-        } else {
-            binding.noticeGotButton.setClickable(false);
-
-            noticeAnimPlayer.clearEntries();
-            noticeAnimPlayer.apply(new AnimPlayer.Entry(binding.noticeLayout, Animations.BounceShrink))
-                    .setOnStart(() -> binding.noticeLayout.setVisibility(View.VISIBLE))
-                    .setOnEnd(() -> binding.noticeLayout.setVisibility(View.GONE))
-                    .start();
-        }
-    }
-
-        private void refreshBackground() {
-        BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
-    }
-
-    private void refreshTopBarColor(boolean loadFromBackground) {
-        int backgroundMenuTop = ContextCompat.getColor(this, R.color.background_menu_top);
-
-        if (loadFromBackground) {
-            Bitmap bitmap = ImageUtils.getBitmapFromImageView(binding.backgroundView);
-            if (bitmap != null) {
-                Palette palette = Palette.from(bitmap).generate();
-
-                boolean isDarkMode = ZHTools.isDarkMode(this);
-                binding.topLayout.setBackgroundColor(
-                        isDarkMode ?
-                                palette.getDarkVibrantColor(backgroundMenuTop) :
-                                palette.getLightVibrantColor(backgroundMenuTop)
-                );
-
-                int mutedColor = isDarkMode ?
-                        palette.getLightMutedColor(0xFFFFFFFF) :
-                        palette.getDarkMutedColor(0xFFFFFFFF);
-
-                ColorStateList colorStateList = ColorStateList.valueOf(mutedColor);
-                binding.appTitleText.setTextColor(mutedColor);
-                binding.downloadButton.setImageTintList(colorStateList);
-                binding.settingButton.setImageTintList(colorStateList);
-
-                return;
-            }
-        }
-        binding.topLayout.setBackgroundColor(backgroundMenuTop);
-        binding.appTitleText.setTextColor(ContextCompat.getColor(this, R.color.menu_bar_text));
-        ColorStateList colorStateList = ColorStateList.valueOf(0xFFFFFFFF);
-        binding.downloadButton.setImageTintList(colorStateList);
-        binding.settingButton.setImageTintList(colorStateList);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private Fragment getVisibleFragment(String tag) {
-        return checkFragmentAvailability(getSupportFragmentManager().findFragmentByTag(tag));
-    }
-
-    private Fragment getVisibleFragment(int id) {
-        return checkFragmentAvailability(getSupportFragmentManager().findFragmentById(id));
-    }
-
-    private Fragment getCurrentFragment() {
-        return getVisibleFragment(binding.containerFragment.getId());
-    }
-
-    private Fragment checkFragmentAvailability(Fragment fragment) {
-        if (fragment != null && fragment.isVisible()) {
-            return fragment;
-        }
-        return null;
-    }
-
-    private void checkNotificationPermission() {
-        if (AllSettings.getSkipNotificationPermissionCheck().getValue() || ZHTools.checkForNotificationPermission()) {
-            return;
-        }
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
-            showNotificationPermissionReasoning();
-            return;
-        }
-        askForNotificationPermission(null);
-    }
-
-    private void showNotificationPermissionReasoning() {
-        new TipDialog.Builder(this)
-                .setTitle(R.string.notification_permission_dialog_title)
-                .setMessage(getString(R.string.notification_permission_dialog_text, InfoDistributor.APP_NAME, InfoDistributor.APP_NAME))
-                .setConfirmClickListener(checked -> askForNotificationPermission(null))
-                .setCancelClickListener(this::handleNoNotificationPermission)
-                .showDialog();
-    }
-
-    private void handleNoNotificationPermission() {
-        AllSettings.getSkipNotificationPermissionCheck().put(true).save();
-        Toast.makeText(this, R.string.notification_permission_toast, Toast.LENGTH_LONG).show();
-    }
-
-    public void askForNotificationPermission(Runnable onSuccessRunnable) {
-        if (Build.VERSION.SDK_INT < 33) return;
-        if (onSuccessRunnable != null) {
-            mRequestNotificationPermissionRunnable = new WeakReference<>(onSuccessRunnable);
-        }
-        mRequestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        if (true) return; // Bypasses all layout rendering logic permanently
     }
 
     private void setPageOpacity(int pageOpacity) {
-        BigDecimal opacity = BigDecimal.valueOf(pageOpacity).divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+        java.math.BigDecimal opacity = java.math.BigDecimal.valueOf(pageOpacity).divide(java.math.BigDecimal.valueOf(100), 10, java.math.RoundingMode.HALF_UP);
         float v = opacity.floatValue();
 
         binding.containerFragment.setAlpha(v);
 
-        BigDecimal adjustedOpacity = BackgroundManager.hasBackgroundImage(BackgroundType.MAIN_MENU)
-                ? opacity.subtract(BigDecimal.valueOf(0.1)).max(BigDecimal.ZERO)
-                : BigDecimal.ONE;
+        java.math.BigDecimal adjustedOpacity = BackgroundManager.hasBackgroundImage(BackgroundType.MAIN_MENU)
+                ? opacity.subtract(java.math.BigDecimal.valueOf(0.1)).max(java.math.BigDecimal.ZERO)
+                : java.math.BigDecimal.ONE;
 
         binding.topLayout.setAlpha(adjustedOpacity.floatValue());
     }
