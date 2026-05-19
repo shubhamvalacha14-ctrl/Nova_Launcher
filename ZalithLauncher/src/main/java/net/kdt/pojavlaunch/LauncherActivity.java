@@ -541,7 +541,7 @@ public class LauncherActivity extends BaseActivity {
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
     }
 
-        private void refreshTopBarColor(boolean loadFromBackground) {
+            private void refreshTopBarColor(boolean loadFromBackground) {
         int backgroundMenuTop = ContextCompat.getColor(this, R.color.background_menu_top);
         binding.topLayout.setBackgroundColor(backgroundMenuTop);
         binding.appTitleText.setTextColor(ContextCompat.getColor(this, R.color.menu_bar_text));
