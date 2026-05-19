@@ -125,7 +125,6 @@ public class LauncherActivity extends BaseActivity {
     private NotificationManager mNotificationManager;
     private Future<?> checkNotice;
 
-    /* Allows to switch from one button "type" to another */
     private final FragmentManager.FragmentLifecycleCallbacks mFragmentCallbackListener = new FragmentManager.FragmentLifecycleCallbacks() {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
@@ -138,8 +137,6 @@ public class LauncherActivity extends BaseActivity {
     };
 
     private final TaskCountListener mDoubleLaunchPreventionListener = taskCount -> {
-        // Hide the notification that starts the game if there are tasks executing.
-        // Prevents the user from trying to launch the game with tasks ongoing.
         if (taskCount > 0) {
             TaskExecutors.runInUIThread(() -> mNotificationManager.cancel(NotificationUtils.NOTIFICATION_ID_GAME_START));
         }
@@ -162,7 +159,6 @@ public class LauncherActivity extends BaseActivity {
     @Subscribe()
     public void event(SwapToLoginEvent event) {
         Fragment currentFragment = getCurrentFragment();
-        //如果当前可见的Fragment不为空，则判断当前的Fragment是否为AccountFragment，不是就跳转至AccountFragment
         if (currentFragment == null || getVisibleFragment(AccountFragment.TAG) != null) return;
         ZHTools.swapFragmentWithAnim(currentFragment, AccountFragment.class, AccountFragment.TAG, null);
     }
@@ -381,7 +377,6 @@ public class LauncherActivity extends BaseActivity {
 
         checkNotice();
 
-        //检查已经下载后的包，或者检查更新
         Task.runTask(() -> {
             UpdateUtils.checkDownloadedPackage(this, false, true);
             return null;
@@ -394,11 +389,9 @@ public class LauncherActivity extends BaseActivity {
             public void handleOnBackPressed() {
                 Fragment currentFragment = getCurrentFragment();
                 if (currentFragment instanceof BaseFragment && !((BaseFragment) currentFragment).onBackPressed()) {
-                    //Fragment那边拒绝了返回事件
                     return;
                 }
 
-                //如果栈中只剩下1个或没有Fragment，则直接退出启动器
                 if (getSupportFragmentManager().getBackStackEntryCount() <= 1) {
                     finish();
                 } else {
@@ -408,7 +401,6 @@ public class LauncherActivity extends BaseActivity {
         });
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        //如果栈中没有Fragment，那么就将主Fragment添加进来
         if (fragmentManager.getBackStackEntryCount() < 1) {
             fragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
@@ -435,160 +427,13 @@ public class LauncherActivity extends BaseActivity {
             if (fragment instanceof MainMenuFragment) {
                 ZHTools.swapFragmentWithAnim(fragment, SettingsFragment.class, SettingsFragment.TAG, null);
             } else {
-                // The setting button doubles as a home button now
                 Tools.backToMainMenu(this);
             }
         });
         binding.appTitleText.setText(InfoDistributor.APP_NAME);
         binding.appTitleText.setOnClickListener(v -> {
-            String shiftedString = StringUtils.shiftString(binding.appTitleText.getText().toString(), ShiftDirection.RIGHT, 1);
-            if (new Random().nextInt(100) < 20 && shiftedString.equals(InfoDistributor.APP_NAME)) {
-                ErrorActivity.showEasterEgg(this);
-                return;
-            }
-            binding.appTitleText.setText(shiftedString);
-        });
-
-        binding.progressLayout.observe(ProgressLayout.DOWNLOAD_MINECRAFT);
-        binding.progressLayout.observe(ProgressLayout.UNPACK_RUNTIME);
-        binding.progressLayout.observe(ProgressLayout.INSTALL_RESOURCE);
-        binding.progressLayout.observe(ProgressLayout.LOGIN_ACCOUNT);
-        binding.progressLayout.observe(ProgressLayout.DOWNLOAD_VERSION_LIST);
-        binding.progressLayout.observe(ProgressLayout.CHECKING_MODS);
-
-        binding.noticeGotButton.setOnClickListener(v -> {
-            setNotice(false);
-            AllSettings.getNoticeDefault().put(false).save();
-        });
-        new DraggableViewWrapper(binding.noticeLayout, new DraggableViewWrapper.AttributesFetcher() {
-            @NonNull
-            @Override
-            public DraggableViewWrapper.ScreenPixels getScreenPixels() {
-                return new DraggableViewWrapper.ScreenPixels(0, 0,
-                        currentDisplayMetrics.widthPixels - binding.noticeLayout.getWidth(),
-                        currentDisplayMetrics.heightPixels - binding.noticeLayout.getHeight());
-            }
-
-            @NonNull
-            @Override
-            public int[] get() {
-                return new int[]{(int) binding.noticeLayout.getX(), (int) binding.noticeLayout.getY()};
-            }
-
-            @Override
-            public void set(int x, int y) {
-                binding.noticeLayout.setX(x);
-                binding.noticeLayout.setY(y);
-            }
-        }).init();
-
-        //愚人节彩蛋
-        if (ZHTools.checkDate(4, 1)) binding.hair.setVisibility(View.VISIBLE);
-        else binding.hair.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setPageOpacity(AllSettings.getPageOpacity().getValue());
-        VersionsManager.INSTANCE.refresh("LauncherActivity:onResume", false);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getSupportFragmentManager().registerFragmentLifecycleCallbacks(mFragmentCallbackListener, true);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding.progressLayout.cleanUpObservers();
-        ProgressKeeper.removeTaskCountListener(binding.progressLayout);
-        ProgressKeeper.removeTaskCountListener(mProgressServiceKeeper);
-
-        getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(mFragmentCallbackListener);
-        ContextExecutor.clearActivity();
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        LauncherPreferences.computeNotchSize(this);
-    }
-
-    private void launchGame(Version version) {
-        LocalAccountUtils.checkUsageAllowed(new LocalAccountUtils.CheckResultListener() {
-            @Override
-            public void onUsageAllowed() {
-                preLaunch(LauncherActivity.this, version);
-            }
-
-            @Override
-            public void onUsageDenied() {
-                if (!AllSettings.getLocalAccountReminders().getValue()) {
-                    preLaunch(LauncherActivity.this, version);
-                } else {
-                    LocalAccountUtils.openDialog(LauncherActivity.this, checked -> {
-                                LocalAccountUtils.saveReminders(checked);
-                                preLaunch(LauncherActivity.this, version);
-                            },
-                            getString(R.string.account_no_microsoft_account) + getString(R.string.account_purchase_minecraft_account_tip),
-                            R.string.account_continue_to_launch_the_game);
-                }
-            }
-        });
-    }
-
-        private void checkNotice() {
-        if (true) return; // 🛑 Stops background server notice checking completely
-        checkNotice = TaskExecutors.getDefault().submit(() -> CheckNewNotice.checkNewNotice(noticeInfo -> {
-            if (checkNotice.isCancelled() || noticeInfo == null) {
-                return;
-            }
-            //当偏好设置内是开启通知栏 或者 检测到通知编号不为偏好设置里保存的值时，显示通知栏
-            if (AllSettings.getNoticeDefault().getValue() ||
-                    (noticeInfo.numbering != AllSettings.getNoticeNumbering().getValue())) {
-                TaskExecutors.runInUIThread(() -> setNotice(true));
-                AllSettings.getNoticeDefault().put(true)
-                        .put(AllSettings.getNoticeNumbering(), noticeInfo.numbering)
-                        .save();
-            }
-        }));
-    }
-
-    private void setNotice(boolean show) {
-        if (true) return; // 🛑 Bypasses all layout rendering logic permanently
-        if (show) {
-            NoticeInfo noticeInfo = CheckNewNotice.getNoticeInfo();
-            if (noticeInfo != null) {
-                binding.noticeGotButton.setClickable(true);
-
-                binding.noticeTitleView.setText(noticeInfo.title);
-                binding.noticeMessageView.setText(noticeInfo.content);
-                binding.noticeDateView.setText(noticeInfo.date);
-
-                Linkify.addLinks(binding.noticeMessageView, Linkify.WEB_URLS);
-                binding.noticeMessageView.setMovementMethod(LinkMovementMethod.getInstance());
-
-                noticeAnimPlayer.clearEntries();
-                noticeAnimPlayer.apply(new AnimPlayer.Entry(binding.noticeLayout, Animations.BounceEnlarge))
-                        .setOnStart(() -> binding.noticeLayout.setVisibility(View.VISIBLE))
-                        .start();
-            }
-        } else {
-            binding.noticeGotButton.setClickable(false);
-
-            noticeAnimPlayer.clearEntries();
-            noticeAnimPlayer.apply(new AnimPlayer.Entry(binding.noticeLayout, Animations.BounceShrink))
-                    .setOnStart(() -> binding.noticeLayout.setVisibility(View.VISIBLE))
-                    .setOnEnd(() -> binding.noticeLayout.setVisibility(View.GONE))
-                    .start();
-        }
-    }
-
-    }
-
-    private void refreshBackground() {
+            String shiftedString = StringUtils.shiftString(binding.appTitleText.getText().toString(), ShiftDirection.RIGHT, 1
+            private void refreshBackground() {
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
     }
 
