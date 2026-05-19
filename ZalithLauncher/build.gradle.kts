@@ -27,12 +27,13 @@ val getBuildType = {
     buildType
 }
 
-val nameId = "com.movtery.zalithlauncher"
+// 🛠️ UPDATED PACKAGE NAMESPACE STRINGS
+val nameId = "com.sadly.nova"
 val generatedZalithDir = file("$buildDir/generated/source/zalith/java")
-val launcherAPPName = project.findProperty("launcher_app_name") as? String ?: error("The \"launcher_app_name\" property is not set in gradle.properties.")
-val launcherName = project.findProperty("launcher_name") as? String ?: error("The \"launcher_name\" property is not set in gradle.properties.")
-val launcherVersionCode = (project.findProperty("launcher_version_code") as? String)?.toIntOrNull() ?: error("The \"launcher_version_code\" property is not set as an integer in gradle.properties.")
-val launcherVersionName = project.findProperty("launcher_version_name") as? String ?: error("The \"launcher_version_name\" property is not set in gradle.properties.")
+val launcherAPPName = "Nova Launcher"
+val launcherName = "NovaLauncher"
+val launcherVersionCode = (project.findProperty("launcher_version_code") as? String)?.toIntOrNull() ?: 1
+val launcherVersionName = project.findProperty("launcher_version_name") as? String ?: "1.0.0"
 
 configurations {
     create("instrumentedClasspath") {
@@ -74,7 +75,7 @@ android {
         targetSdk = 34
         versionCode = launcherVersionCode
         versionName = launcherVersionName
-        multiDexEnabled = true //important
+        multiDexEnabled = true
         manifestPlaceholders["launcher_name"] = launcherAPPName
     }
 
@@ -99,7 +100,6 @@ android {
             isDebuggable = false
         }
         getByName("release") {
-            // Don't set to true or java.awt will be a.a or something similar.
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             resValue("string", "storageProviderAuthorities", storageProviderId)
@@ -216,11 +216,12 @@ tasks.register("generateInfoDistributor") {
     doLast {
         val constantMap = mapOf(
             "CURSEFORGE_API_KEY" to getCFApiKey(),
-            "LAUNCHER_NAME" to project.property("launcher_name").toString(),
-            "APP_NAME" to project.property("launcher_app_name").toString(),
+            "LAUNCHER_NAME" to launcherName,
+            "APP_NAME" to launcherAPPName,
             "BUILD_TYPE" to getBuildType()
         )
-        generateJavaClass(generatedZalithDir, "com.movtery.zalithlauncher", "InfoDistributor", constantMap)
+        // 🛠️ GENERATES IN THE NEW PATH
+        generateJavaClass(generatedZalithDir, "com.sadly.nova", "InfoDistributor", constantMap)
     }
 }
 
@@ -231,7 +232,6 @@ tasks.named("preBuild") {
 dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("commons-codec:commons-codec:1.17.1")
-    // implementation("com.wu-man:android-bsf-api:3.1.3")
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
     implementation("androidx.annotation:annotation:1.7.0")
@@ -253,16 +253,9 @@ dependencies {
 
     implementation("top.fifthlight.touchcontroller:proxy-client-android:0.0.2")
 
-    // implementation("com.intuit.sdp:sdp-android:1.0.5")
-    // implementation("com.intuit.ssp:ssp-android:1.0.5")
-
     implementation("org.tukaani:xz:1.9")
-    // Our version of exp4j can be built from source at
-    // https://github.com/PojavLauncherTeam/exp4j
     implementation("net.sourceforge.htmlcleaner:htmlcleaner:2.6.1")
     implementation("com.bytedance:bytehook:1.0.10")
-
-    // implementation("net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0")
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
