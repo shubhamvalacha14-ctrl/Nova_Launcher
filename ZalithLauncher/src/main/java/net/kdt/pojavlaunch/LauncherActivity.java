@@ -588,11 +588,11 @@ public class LauncherActivity extends BaseActivity {
 
     }
 
-    private void refreshBackground() {
+    private void refreshBackground()
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
     }
 
-    private void refreshTopBarColor(boolean loadFromBackground) {
+    private void refreshTopBarColor(boolean loadFromBackground)
         int backgroundMenuTop = ContextCompat.getColor(this, R.color.background_menu_top);
 
         if (loadFromBackground) {
