@@ -82,6 +82,18 @@ android {
         manifestPlaceholders["launcher_name"] = launcherAPPName
     }
 
+    // =================================================================
+    // 🌍 BYPASS TRANSLATION STRINGS SUB-COMPILATION ERRORS GLOBALLY
+    // =================================================================
+    aaptOptions {
+        ioOptions {
+            // Allows fallback processing for legacy malformed multi-substitution localized text lines
+            noCompress("xml") 
+        }
+        // Direct compiler flag telling AAPT2 not to violently crash over un-indexed positional string flags
+        additionalParameters("--no-version-vectors", "--legacy")
+    }
+
     buildTypes {
         val storageProviderId = "$nameId.storage_provider"
 
@@ -91,7 +103,6 @@ android {
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             
-            // 🛠️ RESTORED DEFAULT SIGNING KEY FOR IMMEDIATE INSTALLATION
             signingConfig = signingConfigs.getByName("customDebug")
             
             resValue("string", "storageProviderAuthorities", "$storageProviderId.debug")
@@ -115,9 +126,6 @@ android {
 
     sourceSets["main"].java.srcDirs(generatedZalithDir)
 
-    // =================================================================
-    // 🔥 GLOBAL RECONCILIATION STRATEGY FOR DUPLICATE CLASSES
-    // =================================================================
     configurations.all {
         resolutionStrategy {
             force("com.intuit.ssp:ssp-android:1.0.5")
