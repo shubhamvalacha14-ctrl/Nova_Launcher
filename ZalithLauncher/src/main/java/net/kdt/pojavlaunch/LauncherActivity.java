@@ -430,10 +430,114 @@ public class LauncherActivity extends BaseActivity {
                 Tools.backToMainMenu(this);
             }
         });
-        binding.appTitleText.setText(InfoDistributor.APP_NAME);
-        binding.appTitleText.setOnClickListener(v -> {
-            String shiftedString = StringUtils.shiftString(binding.appTitleText.getText().toString(), ShiftDirection.RIGHT, 1
-            private void refreshBackground() {
+                binding.appTitleText.setOnClickListener(v -> {
+            String shiftedString = StringUtils.shiftString(binding.appTitleText.getText().toString(), ShiftDirection.RIGHT, 1);
+            if (new Random().nextInt(100) < 20 && shiftedString.equals(InfoDistributor.APP_NAME)) {
+                ErrorActivity.showEasterEgg(this);
+                return;
+            }
+            binding.appTitleText.setText(shiftedString);
+        });
+
+        binding.progressLayout.observe(ProgressLayout.DOWNLOAD_MINECRAFT);
+        binding.progressLayout.observe(ProgressLayout.UNPACK_RUNTIME);
+        binding.progressLayout.observe(ProgressLayout.INSTALL_RESOURCE);
+        binding.progressLayout.observe(ProgressLayout.LOGIN_ACCOUNT);
+        binding.progressLayout.observe(ProgressLayout.DOWNLOAD_VERSION_LIST);
+        binding.progressLayout.observe(ProgressLayout.CHECKING_MODS);
+
+        binding.noticeGotButton.setOnClickListener(v -> {
+            setNotice(false);
+            AllSettings.getNoticeDefault().put(false).save();
+        });
+        
+        new DraggableViewWrapper(binding.noticeLayout, new DraggableViewWrapper.AttributesFetcher() {
+            @NonNull
+            @Override
+            public DraggableViewWrapper.ScreenPixels getScreenPixels() {
+                return new DraggableViewWrapper.ScreenPixels(0, 0,
+                        currentDisplayMetrics.widthPixels - binding.noticeLayout.getWidth(),
+                        currentDisplayMetrics.heightPixels - binding.noticeLayout.getHeight());
+            }
+
+            @NonNull
+            @Override
+            public int[] get() {
+                return new int[]{(int) binding.noticeLayout.getX(), (int) binding.noticeLayout.getY()};
+            }
+
+            @Override
+            public void set(int x, int y) {
+                binding.noticeLayout.setX(x);
+                binding.noticeLayout.setY(y);
+            }
+        }).init();
+
+        if (ZHTools.checkDate(4, 1)) binding.hair.setVisibility(View.VISIBLE);
+        else binding.hair.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setPageOpacity(AllSettings.getPageOpacity().getValue());
+        VersionsManager.INSTANCE.refresh("LauncherActivity:onResume", false);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(mFragmentCallbackListener, true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding.progressLayout.cleanUpObservers();
+        ProgressKeeper.removeTaskCountListener(binding.progressLayout);
+        ProgressKeeper.removeTaskCountListener(mProgressServiceKeeper);
+
+        getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(mFragmentCallbackListener);
+        ContextExecutor.clearActivity();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        LauncherPreferences.computeNotchSize(this);
+    }
+
+    private void launchGame(Version version) {
+        LocalAccountUtils.checkUsageAllowed(new LocalAccountUtils.CheckResultListener() {
+            @Override
+            public void onUsageAllowed() {
+                preLaunch(LauncherActivity.this, version);
+            }
+
+            @Override
+            public void onUsageDenied() {
+                if (!AllSettings.getLocalAccountReminders().getValue()) {
+                    preLaunch(LauncherActivity.this, version);
+                } else {
+                    LocalAccountUtils.openDialog(LauncherActivity.this, checked -> {
+                                LocalAccountUtils.saveReminders(checked);
+                                preLaunch(LauncherActivity.this, version);
+                            },
+                            getString(R.string.account_no_microsoft_account) + getString(R.string.account_purchase_minecraft_account_tip),
+                            R.string.account_continue_to_launch_the_game);
+                }
+            }
+        });
+    }
+
+    private void checkNotice() {
+        if (true) return;
+    }
+
+    private void setNotice(boolean show) {
+        if (true) return;
+    }
+
+    private void refreshBackground() {
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
     }
 
