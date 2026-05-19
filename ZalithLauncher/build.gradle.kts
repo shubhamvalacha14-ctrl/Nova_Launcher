@@ -27,8 +27,8 @@ val getBuildType = {
     buildType
 }
 
-// 🛠️ UPDATED PACKAGE NAMESPACE STRINGS
-val nameId = "com.sadly.nova"
+// 🛠️ THE SECRET FIX: Keep the code namespace original so internal layout imports don't break
+val nameId = "com.movtery.zalithlauncher" 
 val generatedZalithDir = file("$buildDir/generated/source/zalith/java")
 val launcherAPPName = "Nova Launcher"
 val launcherName = "NovaLauncher"
@@ -50,7 +50,7 @@ configure<StringFogExtension> {
 }
 
 android {
-    namespace = nameId
+    namespace = nameId // Matches original internal codebase structure
     compileSdk = 34
 
     signingConfigs {
@@ -70,7 +70,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = nameId
+        // 🚀 This changes your App Identity on your phone to com.sadly.nova without breaking the internal code compilation!
+        applicationId = "com.sadly.nova" 
         minSdk = 26
         targetSdk = 34
         versionCode = launcherVersionCode
@@ -80,7 +81,7 @@ android {
     }
 
     buildTypes {
-        val storageProviderId = "$nameId.storage_provider"
+        val storageProviderId = "com.sadly.nova.storage_provider"
 
         getByName("debug") {
             applicationIdSuffix = ".debug"
@@ -220,8 +221,7 @@ tasks.register("generateInfoDistributor") {
             "APP_NAME" to launcherAPPName,
             "BUILD_TYPE" to getBuildType()
         )
-        // 🛠️ GENERATES IN THE NEW PATH
-        generateJavaClass(generatedZalithDir, "com.sadly.nova", "InfoDistributor", constantMap)
+        generateJavaClass(generatedZalithDir, "com.movtery.zalithlauncher", "InfoDistributor", constantMap)
     }
 }
 
