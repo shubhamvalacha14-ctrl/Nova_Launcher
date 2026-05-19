@@ -516,10 +516,20 @@ public class LauncherActivity extends BaseActivity {
         LauncherPreferences.computeNotchSize(this);
     }
 
-    private void launchGame(Version version) {
+        private void launchGame(Version version) {
         LocalAccountUtils.checkUsageAllowed(new LocalAccountUtils.CheckResultListener() {
             @Override
             public void onUsageAllowed() {
+                // Forces Vulkan Zink to handle chunk loading and vertex math safely
+                try {
+                    android.system.Os.setenv("vblank_mode", "0", true);
+                    android.system.Os.setenv("allow_glsl_extension_directive_midshader", "false", true);
+                    android.system.Os.setenv("MESA_EXTENSION_OVERRIDE", "-GL_ARB_gpu_shader5", true);
+                    android.system.Os.setenv("zink_debug", "compact", true);
+                } catch (Exception e) {
+                    // Fallback if system environment injection is restricted
+                }
+
                 preLaunch(LauncherActivity.this, version);
             }
 
@@ -529,11 +539,12 @@ public class LauncherActivity extends BaseActivity {
                     preLaunch(LauncherActivity.this, version);
                 } else {
                     LocalAccountUtils.openDialog(LauncherActivity.this, checked -> {
-                                LocalAccountUtils.saveReminders(checked);
-                                preLaunch(LauncherActivity.this, version);
-                            },
-                            getString(R.string.account_no_microsoft_account) + getString(R.string.account_purchase_minecraft_account_tip),
-                            R.string.account_continue_to_launch_the_game);
+                        LocalAccountUtils.saveReminders(checked);
+                        preLaunch(LauncherActivity.this, version);
+                    },
+                    getString(R.string.account_no_microsoft_account) + getString(R.string.account_purchase_minecraft) +
+                    getString(R.string.account_continue_to_launch_the_game)
+                    );
                 }
             }
         });
