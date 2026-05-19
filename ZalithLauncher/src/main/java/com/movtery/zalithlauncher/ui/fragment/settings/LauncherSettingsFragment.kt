@@ -1,9 +1,14 @@
 package com.movtery.zalithlauncher.ui.fragment.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.movtery.anim.AnimPlayer
 import com.movtery.anim.animations.Animations
 import com.movtery.zalithlauncher.R
@@ -19,7 +24,6 @@ import com.movtery.zalithlauncher.ui.fragment.settings.wrapper.SeekBarSettingsWr
 import com.movtery.zalithlauncher.ui.fragment.settings.wrapper.SwitchSettingsWrapper
 import com.movtery.zalithlauncher.utils.CleanUpCache.Companion.start
 import com.movtery.zalithlauncher.utils.ZHTools
-import net.kdt.pojavlaunch.LauncherActivity
 import org.greenrobot.eventbus.EventBus
 
 class LauncherSettingsFragment() : AbstractSettingsFragment(R.layout.settings_fragment_launcher, SettingCategory.LAUNCHER) {
@@ -194,10 +198,26 @@ class LauncherSettingsFragment() : AbstractSettingsFragment(R.layout.settings_fr
 
     private fun setupNotificationRequestPreference(notificationPermissionRequest: SwitchSettingsWrapper) {
         val activity = requireActivity()
-        if (activity is LauncherActivity) {
-            if (ZHTools.checkForNotificationPermission()) notificationPermissionRequest.setGone()
-            notificationPermissionRequest.switchView.setOnCheckedChangeListener { _, _ ->
-                activity.askForNotificationPermission {
+        
+        // Handle post-Android 13 notification runtime verification safely via default platform APIs
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = ContextCompat.checkSelfPermission(
+                activity, 
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+            
+            if (hasPermission) {
+                notificationPermissionRequest.setGone()
+                return
+            }
+            
+            notificationPermissionRequest.switchView.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    ActivityCompat.requestPermissions(
+                        activity,
+                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                        101
+                    )
                     notificationPermissionRequest.mainView.visibility = View.GONE
                 }
             }
