@@ -1,4 +1,4 @@
-package net.kdt.pojavlaunch;
+ package net.kdt.pojavlaunch;
 
 import static com.movtery.zalithlauncher.launch.LaunchGame.preLaunch;
 import static net.kdt.pojavlaunch.Tools.currentDisplayMetrics;
@@ -533,7 +533,7 @@ public class LauncherActivity extends BaseActivity {
                 preLaunch(LauncherActivity.this, version);
             }
 
-            @Override
+                        @Override
             public void onUsageDenied() {
                 if (!AllSettings.getLocalAccountReminders().getValue()) {
                     preLaunch(LauncherActivity.this, version);
@@ -542,13 +542,11 @@ public class LauncherActivity extends BaseActivity {
                         LocalAccountUtils.saveReminders(checked);
                         preLaunch(LauncherActivity.this, version);
                     },
-                    getString(R.string.account_no_microsoft_account) + getString(R.string.account_purchase_minecraft) +
+                    getString(R.string.account_no_microsoft_account) + getString(R.string.launcher_need_microsoft_premium) +
                     getString(R.string.account_continue_to_launch_the_game)
                     );
                 }
             }
-        });
-    }
 
         private void checkNotice() {
         if (true) return; // 🛑 Stops background server notice checking completely
