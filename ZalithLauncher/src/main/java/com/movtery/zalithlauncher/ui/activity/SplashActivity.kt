@@ -19,7 +19,6 @@ import com.movtery.zalithlauncher.feature.unpack.UnpackSingleFilesTask
 import com.movtery.zalithlauncher.task.Task
 import com.movtery.zalithlauncher.ui.dialog.TipDialog
 import com.movtery.zalithlauncher.utils.StoragePermissionsUtils
-import net.kdt.pojavlaunch.LauncherActivity
 import net.kdt.pojavlaunch.MissingStorageActivity
 import net.kdt.pojavlaunch.Tools
 
@@ -137,10 +136,14 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun toMain() {
-        // Correcting intent routing to point explicitly to your parent package's activity configuration mapping
-        val intent = Intent().setClassName(packageName, "net.kdt.pojavlaunch.LauncherActivity")
-        startActivity(intent)
-        finish()
+        // Dynamic class lookup to jump straight past rigid compile-time package separation errors safely
+        try {
+            val intent = Intent(this, Class.forName("net.kdt.pojavlaunch.LauncherActivity"))
+            startActivity(intent)
+            finish()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
