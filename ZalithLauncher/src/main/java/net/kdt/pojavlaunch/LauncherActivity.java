@@ -541,8 +541,82 @@ public class LauncherActivity extends BaseActivity {
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
     }
 
-    private void refreshTopBarColor(boolean loadFromBackground) {
+        private void refreshTopBarColor(boolean loadFromBackground) {
         int backgroundMenuTop = ContextCompat.getColor(this, R.color.background_menu_top);
+        binding.topLayout.setBackgroundColor(backgroundMenuTop);
+        binding.appTitleText.setTextColor(ContextCompat.getColor(this, R.color.menu_bar_text));
+        ColorStateList colorStateList = ColorStateList.valueOf(0xFFFFFFFF);
+        binding.downloadButton.setImageTintList(colorStateList);
+        binding.settingButton.setImageTintList(colorStateList);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private Fragment getVisibleFragment(String tag) {
+        return checkFragmentAvailability(getSupportFragmentManager().findFragmentByTag(tag));
+    }
+
+    private Fragment getVisibleFragment(int id) {
+        return checkFragmentAvailability(getSupportFragmentManager().findFragmentById(id));
+    }
+
+    private Fragment getCurrentFragment() {
+        return getVisibleFragment(binding.containerFragment.getId());
+    }
+
+    private Fragment checkFragmentAvailability(Fragment fragment) {
+        if (fragment != null && fragment.isVisible()) {
+            return fragment;
+        }
+        return null;
+    }
+
+    private void checkNotificationPermission() {
+        if (AllSettings.getSkipNotificationPermissionCheck().getValue() || ZHTools.checkForNotificationPermission()) {
+            return;
+        }
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+            showNotificationPermissionReasoning();
+            return;
+        }
+        askForNotificationPermission(null);
+    }
+
+    private void showNotificationPermissionReasoning() {
+        new TipDialog.Builder(this)
+                .setTitle(R.string.notification_permission_dialog_title)
+                .setMessage(getString(R.string.notification_permission_dialog_text, InfoDistributor.APP_NAME, InfoDistributor.APP_NAME))
+                .setConfirmClickListener(checked -> askForNotificationPermission(null))
+                .setCancelClickListener(this::handleNoNotificationPermission)
+                .showDialog();
+    }
+
+    private void handleNoNotificationPermission() {
+        AllSettings.getSkipNotificationPermissionCheck().put(true).save();
+        Toast.makeText(this, R.string.notification_permission_toast, Toast.LENGTH_LONG).show();
+    }
+
+    public void askForNotificationPermission(Runnable onSuccessRunnable) {
+        if (Build.VERSION.SDK_INT < 33) return;
+        if (onSuccessRunnable != null) {
+            mRequestNotificationPermissionRunnable = new WeakReference<>(onSuccessRunnable);
+        }
+        mRequestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+    }
+
+    private void setPageOpacity(int pageOpacity) {
+        BigDecimal opacity = BigDecimal.valueOf(pageOpacity).divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+        float v = opacity.floatValue();
+
+        binding.containerFragment.setAlpha(v);
+
+        BigDecimal adjustedOpacity = BackgroundManager.hasBackgroundImage(BackgroundType.MAIN_MENU)
+                ? opacity.subtract(BigDecimal.valueOf(0.1)).max(BigDecimal.ZERO)
+                : BigDecimal.ONE;
+
+        binding.topLayout.setAlpha(adjustedOpacity.floatValue());
+    }
+}
 
         if (loadFromBackground) {
             Bitmap bitmap = ImageUtils.getBitmapFromImageView(binding.backgroundView);
