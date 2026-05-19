@@ -1,16 +1,18 @@
-name: Build APK
+name: Build APK Fresh
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build APK for all
+    name: Build APK for all (Fresh Load)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          clean: true # 🧹 Forces a completely clean workspace wipe
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -18,24 +20,28 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
-      - name: Setup Gradle
+      - name: Setup Gradle (No Cache Mode)
         uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-disabled: true # 🛑 Bypasses old compilation artifacts completely
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      # 🛠️ This step automatically generates a default Android debug signing key on the server
       - name: Setup Default Debug Keystore
         run: |
           mkdir -p ~/.android
           keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
+      - name: Clean Project
+        run: ./gradlew clean # 🚀 Wipes out previous broken target data
+
       - name: Build Debug APK
-        run: ./gradlew :ZalithLauncher:assembleDebug
+        run: ./gradlew :ZalithLauncher:assembleDebug --no-daemon --stacktrace
 
       - name: Upload Debug APK for all
         uses: actions/upload-artifact@v4
         with:
-          name: NovaLauncher-Debug
+          name: NovaLauncher-Fresh-Debug
           path: ZalithLauncher/build/outputs/apk/debug/*.apk
           
