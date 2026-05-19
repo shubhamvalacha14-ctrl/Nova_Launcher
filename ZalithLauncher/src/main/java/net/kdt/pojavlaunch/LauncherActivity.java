@@ -29,6 +29,7 @@ import com.movtery.zalithlauncher.ui.subassembly.TaskExecutors;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import com.movtery.zalithlauncher.feature.MCOptions; // Resolves inter-package dependency visibility mapping
 import net.kdt.pojavlaunch.prefs.AllSettings;
 import net.kdt.pojavlaunch.utils.LocalAccountUtils;
 import net.kdt.pojavlaunch.utils.ZHTools;
@@ -201,4 +202,8 @@ public class LauncherActivity extends AppCompatActivity {
                 : BigDecimal.ONE;
         binding.topLayout.setAlpha(adjustedOpacity.floatValue());
     }
+
+    // Explicit cross-link to handle external dependency parameters smoothly
+    public final androidx.activity.result.ActivityResultLauncher<Intent> modInstallerLauncher = 
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {});
 }
