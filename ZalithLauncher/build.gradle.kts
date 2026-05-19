@@ -120,7 +120,7 @@ android {
         }
     }
 
-    sourceSets["main"].java.srcDirs(generatedZalithDir)
+    sourceSets["main"].java.srcDirs(generatedZalithDir, "src/main/java")
 
     configurations.all {
         resolutionStrategy {
