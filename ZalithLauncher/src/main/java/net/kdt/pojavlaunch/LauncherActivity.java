@@ -586,8 +586,6 @@ public class LauncherActivity extends BaseActivity {
         }
     }
 
-    }
-
     private void refreshBackground()
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
     }
