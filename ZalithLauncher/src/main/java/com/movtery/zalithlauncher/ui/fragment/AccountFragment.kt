@@ -209,7 +209,7 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
 
         reloadAccounts()
         refreshOtherServer()
-    
+    }
     
     @SuppressLint("NotifyDataSetChanged")
     private fun reloadRecyclerView() {
