@@ -108,8 +108,8 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private void checkNotice() {
-        checkNotice = TaskExecutors.getDefault().submit(() -> CheckNewNotice.checkNewNotice(noticeInfo -> {
-            if (checkNotice.isCancelled() || noticeInfo == null) {
+        TaskExecutors.getDefault().submit(() -> CheckNewNotice.checkNewNotice(noticeInfo -> {
+            if (noticeInfo == null) {
                 return;
             }
             runOnUiThread(() -> setNotice(noticeInfo));
@@ -201,6 +201,4 @@ public class LauncherActivity extends AppCompatActivity {
                 : BigDecimal.ONE;
         binding.topLayout.setAlpha(adjustedOpacity.floatValue());
     }
-    
-    private static java.util.concurrent.Future<?> checkNotice;
 }
