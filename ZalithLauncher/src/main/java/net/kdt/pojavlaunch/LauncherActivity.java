@@ -202,5 +202,5 @@ public class LauncherActivity extends AppCompatActivity {
         binding.topLayout.setAlpha(adjustedOpacity.floatValue());
     }
     
-    private static Object checkNotice;
+    private static java.util.concurrent.Future<?> checkNotice;
 }
