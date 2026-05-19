@@ -430,7 +430,8 @@ public class LauncherActivity extends BaseActivity {
                 Tools.backToMainMenu(this);
             }
         });
-                binding.appTitleText.setOnClickListener(v -> {
+        binding.appTitleText.setText(InfoDistributor.APP_NAME);
+             binding.appTitleText.setOnClickListener(v -> {
             String shiftedString = StringUtils.shiftString(binding.appTitleText.getText().toString(), ShiftDirection.RIGHT, 1);
             if (new Random().nextInt(100) < 20 && shiftedString.equals(InfoDistributor.APP_NAME)) {
                 ErrorActivity.showEasterEgg(this);
@@ -450,7 +451,6 @@ public class LauncherActivity extends BaseActivity {
             setNotice(false);
             AllSettings.getNoticeDefault().put(false).save();
         });
-        
         new DraggableViewWrapper(binding.noticeLayout, new DraggableViewWrapper.AttributesFetcher() {
             @NonNull
             @Override
