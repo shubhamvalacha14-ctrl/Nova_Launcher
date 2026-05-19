@@ -85,13 +85,9 @@ android {
     // =================================================================
     // 🌍 BYPASS TRANSLATION STRINGS SUB-COMPILATION ERRORS GLOBALLY
     // =================================================================
-    aaptOptions {
-        ioOptions {
-            // Allows fallback processing for legacy malformed multi-substitution localized text lines
-            noCompress("xml") 
-        }
-        // Direct compiler flag telling AAPT2 not to violently crash over un-indexed positional string flags
-        additionalParameters("--no-version-vectors", "--legacy")
+    androidResources {
+        noCompress.addAll(listOf("xml"))
+        additionalParameters.addAll(listOf("--no-version-vectors", "--legacy"))
     }
 
     buildTypes {
