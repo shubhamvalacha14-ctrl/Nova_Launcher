@@ -75,7 +75,10 @@ android {
         versionCode = launcherVersionCode
         versionName = launcherVersionName
         multiDexEnabled = true
+        
+        // 🚀 INJECTED PLACEHOLDERS TO SATISFY MANIFEST MERGER
         manifestPlaceholders["launcher_name"] = launcherAPPName
+        manifestPlaceholders["storageProviderAuthorities"] = "com.sadly.nova.storage_provider.debug"
     }
 
     buildTypes {
@@ -87,22 +90,24 @@ android {
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("customDebug")
-            resValue("string", "storageProviderAuthorities", "$storageProviderId.debug")
+            manifestPlaceholders["storageProviderAuthorities"] = "$storageProviderId.debug"
         }
         create("proguard") {
             initWith(getByName("debug"))
             isMinifyEnabled = true
             isShrinkResources = true
+            manifestPlaceholders["storageProviderAuthorities"] = "$storageProviderId.debug"
         }
         create("proguardNoDebug") {
             initWith(getByName("proguard"))
             isDebuggable = false
+            manifestPlaceholders["storageProviderAuthorities"] = "$storageProviderId.debug"
         }
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            resValue("string", "storageProviderAuthorities", storageProviderId)
             signingConfig = signingConfigs.getByName("releaseBuild")
+            manifestPlaceholders["storageProviderAuthorities"] = storageProviderId
         }
     }
 
